@@ -1,0 +1,62 @@
+@keyframes slide-fade-down {
+    from {
+      opacity: 0;
+      transform: translateY(4px) rotateZ(-0.2deg);
+    }
+  
+    to {
+      opacity: 1;
+      transform: translateY(0) rotateZ(0deg);
+    }
+  }
+  
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  
+    to {
+      opacity: 1;
+    }
+  }
+  
+  .word {
+    white-space: nowrap;
+  }
+  
+  .word > * {
+    display: inline-block;
+  }
+  
+  .letter {
+    --_userOverallDelay: var(--delay, 0ms);
+    --_userDragDelay: var(--dragDelay, 50ms);
+    --_dragDelay: calc(
+      var(--i, 0) * var(--_userDragDelay) + var(--_userOverallDelay)
+    );
+    --_perLetterAnimationDuration: var(--duration, 400ms);
+    will-change: transform;
+    animation: var(--_perLetterAnimationDuration) cubic-bezier(0.33, 1, 0.68, 1)
+      var(--_dragDelay) 1 normal slide-fade-down;
+    animation-fill-mode: backwards;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .letter {
+      animation-name: fade-in;
+    }
+  }
+  
+  .hide {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    border: 0;
+    padding: 0;
+  
+    white-space: nowrap;
+    clip-path: inset(100%);
+    clip: rect(0 0 0 0);
+    overflow: hidden;
+  }
+  
