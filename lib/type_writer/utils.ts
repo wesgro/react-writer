@@ -1,24 +1,36 @@
-export const getWrappedWordsFromLetterSegments = ({ letterSegments }: { letterSegments: Intl.SegmentData[] }) => {
-    // Build words by splitting on spaces
+export const getWrappedWordsFromLetterSegments = ({
+  text,
+  graphemeSegmenter
+}: {
+  text: string;
+  graphemeSegmenter: Intl.Segmenter;
+}) => {
     const words: (Intl.SegmentData[] | string)[] = [];
+
+    // Get all graphemes
+    const graphemes = Array.from(graphemeSegmenter.segment(text));
+
+    // Group consecutive non-space graphemes into words
     let currentWord: Intl.SegmentData[] = [];
-  
-    letterSegments.forEach((segment) => {
-      if (segment.segment === " ") {
-        if (currentWord.length) {
+
+    graphemes.forEach((grapheme) => {
+      if (/^\s+$/.test(grapheme.segment)) {
+        // This is a space - finish the current word and add the space
+        if (currentWord.length > 0) {
           words.push(currentWord);
           currentWord = [];
         }
-        words.push(" "); // keep space as separate
+        words.push(" ");
       } else {
-        currentWord.push(segment);
+        // This is a character - add it to the current word
+        currentWord.push(grapheme);
       }
     });
-  
-    // push the last word if any
-    if (currentWord.length) {
+
+    // Don't forget the last word if there is one
+    if (currentWord.length > 0) {
       words.push(currentWord);
     }
-  
+
     return words;
   };

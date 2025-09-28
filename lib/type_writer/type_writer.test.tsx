@@ -146,4 +146,30 @@ describe('TypewriterByLetter', () => {
       expect(letterSpans[i]).toHaveStyle({ '--i': i.toString() })
     }
   })
+
+  it('should work with custom locale', () => {
+    render(<TypewriterByLetter text="Hello" locale="fr" />)
+    expect(screen.getByText('Hello')).toBeInTheDocument()
+  })
+
+  it('should work with custom grapheme segmenter', () => {
+    const customGraphemeSegmenter = new Intl.Segmenter('en', { granularity: 'grapheme' })
+
+    render(<TypewriterByLetter
+      text="Hello world"
+      graphemeSegmenter={customGraphemeSegmenter}
+    />)
+    expect(screen.getByText('Hello world')).toBeInTheDocument()
+  })
+
+  it('should work with mixed configurations', () => {
+    const customGraphemeSegmenter = new Intl.Segmenter('de', { granularity: 'grapheme' })
+
+    render(<TypewriterByLetter
+      text="Hello world"
+      locale="en"
+      graphemeSegmenter={customGraphemeSegmenter}
+    />)
+    expect(screen.getByText('Hello world')).toBeInTheDocument()
+  })
 })

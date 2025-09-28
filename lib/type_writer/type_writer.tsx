@@ -4,10 +4,9 @@ import { getWrappedWordsFromLetterSegments } from "#lib/type_writer/utils";
 
 interface TypewriterProps {
   text?: string;
-  letterSegmenterFn?: Intl.Segmenter;
+  locale?: string;
+  graphemeSegmenter?: Intl.Segmenter;
 }
-
-const letterSegmenter = new Intl.Segmenter("en", { granularity: "grapheme" });
 
 // Type guard to check if a word is an array of segments (not a space string)
 const isWordSegments = (word: Intl.SegmentData[] | string): word is Intl.SegmentData[] => {
@@ -16,11 +15,15 @@ const isWordSegments = (word: Intl.SegmentData[] | string): word is Intl.Segment
 
 const TypewriterByLetter: React.FC<TypewriterProps> = ({
   text = "",
-  letterSegmenterFn = letterSegmenter
+  locale = "en",
+  graphemeSegmenter
 }) => {
-  const letters = Array.from(letterSegmenterFn.segment(text));
+  // Create grapheme segmenter with the specified locale if not provided
+  const finalGraphemeSegmenter = graphemeSegmenter || new Intl.Segmenter(locale, { granularity: "grapheme" });
+
   const words = getWrappedWordsFromLetterSegments({
-    letterSegments: letters
+    text,
+    graphemeSegmenter: finalGraphemeSegmenter
   });
   let counter: number = 0;
   return (
