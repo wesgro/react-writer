@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "pnpm run build:lib && tsc -b && vite build",
+    "build:lib": "tsdown",
     "typecheck": "pnpm run typecheck:lib && pnpm run typecheck:app && pnpm run typecheck:test",
     "typecheck:lib": "tsc --noEmit --project tsconfig.lib.json",
     "typecheck:app": "tsc --noEmit --project tsconfig.app.json",
@@ -26,7 +27,13 @@
     ]
   },
   "exports": {
-    "lib/*": "./lib/*"
+    "lib/*": "./lib/*",
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "exports": {
+      "lib/*": "./dist/lib/*"
+    }
   },
   "dependencies": {
     "react": "^19.1.1",
@@ -48,6 +55,7 @@
     "eslint-plugin-react-refresh": "^0.4.22",
     "globals": "^16.4.0",
     "jsdom": "^27.0.0",
+    "tsdown": "^0.15.5",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.44.1",
     "vite": "npm:rolldown-vite@7.1.13",

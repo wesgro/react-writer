@@ -4,7 +4,7 @@ export const getWrappedWordsFromLetterSegments = ({
 }: {
   text: string;
   graphemeSegmenter: Intl.Segmenter;
-}) => {
+}): (Intl.SegmentData[] | string)[] => {
     const words: (Intl.SegmentData[] | string)[] = [];
 
     // Get all graphemes
