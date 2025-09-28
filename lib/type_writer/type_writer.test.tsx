@@ -172,4 +172,53 @@ describe('TypewriterByLetter', () => {
     />)
     expect(screen.getByText('Hello world')).toBeInTheDocument()
   })
+
+  it('should apply custom timing styles', () => {
+    render(<TypewriterByLetter
+      text="Hi"
+      delay="1000ms"
+      dragDelay="25ms"
+      duration="500ms"
+    />)
+
+    const container = document.querySelector('[data-typewriter-by-letter]')
+    expect(container).toBeInTheDocument()
+    expect(container).toHaveStyle({
+      '--delay': '1000ms',
+      '--dragDelay': '25ms',
+      '--duration': '500ms'
+    })
+  })
+
+  it('should apply individual timing props', () => {
+    render(<TypewriterByLetter
+      text="Test"
+      duration="750ms"
+    />)
+
+    const container = document.querySelector('[data-typewriter-by-letter]')
+    expect(container).toHaveStyle({
+      '--duration': '750ms'
+    })
+    // Other props should not be set if not provided
+    expect(container).not.toHaveStyle({
+      '--delay': expect.any(String)
+    })
+  })
+
+  it('should handle timing values with seconds', () => {
+    render(<TypewriterByLetter
+      text="Test"
+      delay="2s"
+      dragDelay="0.1s"
+      duration="1.5s"
+    />)
+
+    const container = document.querySelector('[data-typewriter-by-letter]')
+    expect(container).toHaveStyle({
+      '--delay': '2s',
+      '--dragDelay': '0.1s',
+      '--duration': '1.5s'
+    })
+  })
 })

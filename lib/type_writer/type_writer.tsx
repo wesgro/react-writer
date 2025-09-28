@@ -1,11 +1,16 @@
-import React from "react";
 import styles from "#lib/type_writer/type_writer.module.css";
 import { getWrappedWordsFromLetterSegments } from "#lib/type_writer/utils";
+
+// Define timing value type that only allows number + unit format
+type TimingValue = `${number}s` | `${number}ms`;
 
 interface TypewriterProps {
   text?: string;
   locale?: string;
   graphemeSegmenter?: Intl.Segmenter;
+  delay?: TimingValue;
+  dragDelay?: TimingValue;
+  duration?: TimingValue;
 }
 
 // Type guard to check if a word is an array of segments (not a space string)
@@ -16,7 +21,10 @@ const isWordSegments = (word: Intl.SegmentData[] | string): word is Intl.Segment
 const TypewriterByLetter: React.FC<TypewriterProps> = ({
   text = "",
   locale = "en",
-  graphemeSegmenter
+  graphemeSegmenter,
+  delay,
+  dragDelay,
+  duration
 }) => {
   // Create grapheme segmenter with the specified locale if not provided
   const finalGraphemeSegmenter = graphemeSegmenter || new Intl.Segmenter(locale, { granularity: "grapheme" });
@@ -26,15 +34,21 @@ const TypewriterByLetter: React.FC<TypewriterProps> = ({
     graphemeSegmenter: finalGraphemeSegmenter
   });
   let counter: number = 0;
+
+  // Build custom styles from props
+  const customStyles = {} as React.CSSProperties & {
+    '--delay'?: string;
+    '--dragDelay'?: string;
+    '--duration'?: string;
+  };
+  if (delay !== undefined) customStyles['--delay'] = delay;
+  if (dragDelay !== undefined) customStyles['--dragDelay'] = dragDelay;
+  if (duration !== undefined) customStyles['--duration'] = duration;
+
   return (
     <span
       data-typewriter-by-letter
-      // You can customize duration and drag delay and whatever else you may want to expose as properties
-      // style={{
-      //   "--dragDelay": "23ms",
-      //   "--duration": "834ms",
-      //   "--delay": "2000ms"
-      // }}
+      style={customStyles}
     >
       <span className={styles.hide}>{text}</span>
       <span aria-hidden="true">
