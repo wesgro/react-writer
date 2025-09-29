@@ -2,9 +2,9 @@ import styles from "#lib/type_writer/type_writer.module.css";
 import { getWrappedWordsFromLetterSegments } from "#lib/type_writer/utils";
 
 // Define timing value type that only allows number + unit format
-type TimingValue = `${number}s` | `${number}ms`;
+export type TimingValue = `${number}s` | `${number}ms`;
 
-interface TypewriterProps {
+export interface TypewriterProps {
   text?: string;
   locale?: string;
   graphemeSegmenter?: Intl.Segmenter;

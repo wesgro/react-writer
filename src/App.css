@@ -1,0 +1,25 @@
+.layout {
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: fit-content(20ch) 1fr;
+    gap: 1rem;
+    grid-template-areas: "main aside";
+}
+
+aside {
+    grid-area: aside;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+main {
+    grid-area: main;
+    padding: 0.5rem;
+    min-width: 45ch;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+}
+

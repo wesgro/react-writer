@@ -1,1 +1,1 @@
-export { TypewriterByLetter } from './type_writer'
+export { TypewriterByLetter, type TimingValue, type TypewriterProps } from './type_writer'
