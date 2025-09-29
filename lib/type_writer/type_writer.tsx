@@ -22,7 +22,7 @@ const isWordSegments = (
 
 type FC = ReturnType<typeof React.forwardRef<HTMLSpanElement, TypewriterProps>>;
 
-const TypewriterByLetter: FC = React.forwardRef<
+const _TypewriterByLetter: FC = React.forwardRef<
   HTMLSpanElement,
   TypewriterProps
 >(
@@ -87,4 +87,5 @@ const TypewriterByLetter: FC = React.forwardRef<
   }
 );
 
+const TypewriterByLetter:FC = React.memo(_TypewriterByLetter);
 export { TypewriterByLetter };
