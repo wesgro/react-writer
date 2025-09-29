@@ -53,7 +53,7 @@ const TypewriterByLetter: FC = React.forwardRef<
 
     return (
       <span ref={ref} data-typewriter-by-letter style={customStyles}>
-        <span className={styles.hide} role="note">
+        <span className={styles.hide}>
           {text}
         </span>
         <span aria-hidden="true">

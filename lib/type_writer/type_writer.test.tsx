@@ -5,9 +5,8 @@ import { TypewriterByLetter } from '#lib/type_writer'
 describe('TypewriterByLetter', () => {
   it('should render with default props', () => {
     render(<TypewriterByLetter />)
-    // Find the container by looking for the hidden text and getting its parent
-    const hiddenText = screen.getByRole('note')
-    const container = hiddenText.closest('[data-typewriter-by-letter]')
+    // Find the container by its data attribute
+    const container = document.querySelector('[data-typewriter-by-letter]')
     expect(container).toBeInTheDocument()
   })
 
@@ -18,18 +17,18 @@ describe('TypewriterByLetter', () => {
 
   it('should render with data attributes', () => {
     render(<TypewriterByLetter text="Hi" />)
-    const hiddenText = screen.getByRole('note')
-    const container = hiddenText.closest('[data-typewriter-by-letter]')
+    const container = document.querySelector('[data-typewriter-by-letter]')
     expect(container).toBeInTheDocument()
     expect(container).toHaveAttribute('data-typewriter-by-letter')
   })
 
   it('should render hidden text for screen readers', () => {
     render(<TypewriterByLetter text="Test text" />)
-    const hiddenText = screen.getByText('Test text')
+    // Find the hidden text by looking for text within the container
+    const container = document.querySelector('[data-typewriter-by-letter]')
+    const hiddenText = container?.querySelector('span[class*="hide"]')
     expect(hiddenText).toBeInTheDocument()
-    // Check that it has a CSS module class (scoped class name)
-    expect(hiddenText).toHaveClass(/_hide_/)
+    expect(hiddenText).toHaveTextContent('Test text')
   })
 
   it('should render visible text with aria-hidden', () => {
@@ -44,8 +43,7 @@ describe('TypewriterByLetter', () => {
 
   it('should handle empty string', () => {
     render(<TypewriterByLetter text="" />)
-    const hiddenText = screen.getByRole('note')
-    const container = hiddenText.closest('[data-typewriter-by-letter]')
+    const container = document.querySelector('[data-typewriter-by-letter]')
     expect(container).toBeInTheDocument()
   })
 
