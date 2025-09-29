@@ -5,7 +5,9 @@ import { TypewriterByLetter } from '#lib/type_writer'
 describe('TypewriterByLetter', () => {
   it('should render with default props', () => {
     render(<TypewriterByLetter />)
-    const container = document.querySelector('[data-typewriter-by-letter]')
+    // Find the container by looking for the hidden text and getting its parent
+    const hiddenText = screen.getByRole('note')
+    const container = hiddenText.closest('[data-typewriter-by-letter]')
     expect(container).toBeInTheDocument()
   })
 
@@ -16,7 +18,8 @@ describe('TypewriterByLetter', () => {
 
   it('should render with data attributes', () => {
     render(<TypewriterByLetter text="Hi" />)
-    const container = document.querySelector('[data-typewriter-by-letter]')
+    const hiddenText = screen.getByRole('note')
+    const container = hiddenText.closest('[data-typewriter-by-letter]')
     expect(container).toBeInTheDocument()
     expect(container).toHaveAttribute('data-typewriter-by-letter')
   })
@@ -31,6 +34,7 @@ describe('TypewriterByLetter', () => {
 
   it('should render visible text with aria-hidden', () => {
     render(<TypewriterByLetter text="Hi" />)
+    // Find the visible text container by looking for the aria-hidden element
     const ariaHiddenElement = document.querySelector('span[aria-hidden="true"]')
     expect(ariaHiddenElement).toBeInTheDocument()
     expect(ariaHiddenElement).toHaveAttribute('aria-hidden', 'true')
@@ -40,33 +44,37 @@ describe('TypewriterByLetter', () => {
 
   it('should handle empty string', () => {
     render(<TypewriterByLetter text="" />)
-    const container = document.querySelector('[data-typewriter-by-letter]')
+    const hiddenText = screen.getByRole('note')
+    const container = hiddenText.closest('[data-typewriter-by-letter]')
     expect(container).toBeInTheDocument()
   })
 
   it('should handle multiple words', () => {
-    render(<TypewriterByLetter text="Hello world" />)
-    expect(screen.getByText('Hello world')).toBeInTheDocument()
+    render(<TypewriterByLetter text="Hallo Welt" />)
+    expect(screen.getByText('Hallo Welt')).toBeInTheDocument()
   })
 
   it('should apply word styling to multi-letter words', () => {
     render(<TypewriterByLetter text="Hello" />)
-    // The word "Hello" should be wrapped in a span with word class
-    const wordSpans = document.querySelectorAll('span[class*="word"]')
+    // Find the visible text container and look for word spans within it
+    const ariaHiddenElement = document.querySelector('span[aria-hidden="true"]')
+    const wordSpans = ariaHiddenElement?.querySelectorAll('span[class*="word"]') || []
     expect(wordSpans.length).toBeGreaterThan(0)
   })
 
   it('should apply letter styling to individual letters', () => {
     render(<TypewriterByLetter text="H" />)
-    // Individual letters should be wrapped in spans with letter class
-    const letterSpans = document.querySelectorAll('span[class*="letter"]')
+    // Find the visible text container and look for letter spans within it
+    const ariaHiddenElement = document.querySelector('span[aria-hidden="true"]')
+    const letterSpans = ariaHiddenElement?.querySelectorAll('span[class*="letter"]') || []
     expect(letterSpans.length).toBeGreaterThan(0)
   })
 
   it('should increment word indices correctly for multiple words', () => {
     render(<TypewriterByLetter text="Hi there" />)
 
-    const wordSpans = document.querySelectorAll('span[data-word-index]')
+    const ariaHiddenElement = document.querySelector('span[aria-hidden="true"]')
+    const wordSpans = ariaHiddenElement?.querySelectorAll('span[data-word-index]') || []
     expect(wordSpans).toHaveLength(2)
 
     // First word "Hi" should have data-word-index="0"
@@ -81,7 +89,8 @@ describe('TypewriterByLetter', () => {
   it('should increment letter indices sequentially across all words', () => {
     render(<TypewriterByLetter text="Hi" />)
 
-    const letterSpans = document.querySelectorAll('span[data-letter-index]')
+    const ariaHiddenElement = document.querySelector('span[aria-hidden="true"]')
+    const letterSpans = ariaHiddenElement?.querySelectorAll('span[data-letter-index]') || []
     expect(letterSpans).toHaveLength(2)
 
     // Letter "H" should have data-letter-index="0"
@@ -96,7 +105,8 @@ describe('TypewriterByLetter', () => {
   it('should maintain sequential letter indices across multiple words', () => {
     render(<TypewriterByLetter text="A B" />)
 
-    const letterSpans = document.querySelectorAll('span[data-letter-index]')
+    const ariaHiddenElement = document.querySelector('span[aria-hidden="true"]')
+    const letterSpans = ariaHiddenElement?.querySelectorAll('span[data-letter-index]') || []
     expect(letterSpans).toHaveLength(2)
 
     // Letter "A" should have data-letter-index="0"
@@ -111,7 +121,8 @@ describe('TypewriterByLetter', () => {
   it('should handle longer text with correct letter incrementation', () => {
     render(<TypewriterByLetter text="Hello" />)
 
-    const letterSpans = document.querySelectorAll('span[data-letter-index]')
+    const ariaHiddenElement = document.querySelector('span[aria-hidden="true"]')
+    const letterSpans = ariaHiddenElement?.querySelectorAll('span[data-letter-index]') || []
     expect(letterSpans).toHaveLength(5)
 
     // Check each letter has the correct sequential index
@@ -122,9 +133,10 @@ describe('TypewriterByLetter', () => {
   })
 
   it('should handle complex text with mixed words and spaces', () => {
-    render(<TypewriterByLetter text="Hello world test" />)
+    render(<TypewriterByLetter text="Hallo Welt Test" />)
 
-    const wordSpans = document.querySelectorAll('span[data-word-index]')
+    const ariaHiddenElement = document.querySelector('span[aria-hidden="true"]')
+    const wordSpans = ariaHiddenElement?.querySelectorAll('span[data-word-index]') || []
     expect(wordSpans).toHaveLength(3)
 
     // Check word indices: 0, 1, 2 (wi = 0, 2, 4 divided by 2)
@@ -138,39 +150,39 @@ describe('TypewriterByLetter', () => {
     expect(wordSpans[2]).toHaveStyle({ '--wi': '2' })
 
     // Check that letters are sequential across all words
-    const letterSpans = document.querySelectorAll('span[data-letter-index]')
-    expect(letterSpans).toHaveLength(14) // H,e,l,l,o (5) + w,o,r,l,d (5) + t,e,s,t (4)
+    const letterSpans = ariaHiddenElement?.querySelectorAll('span[data-letter-index]') || []
+    expect(letterSpans).toHaveLength(13) // H,a,l,l,o (5) + W,e,l,t (4) + T,e,s,t (4)
 
-    for (let i = 0; i < 14; i++) {
+    for (let i = 0; i < 13; i++) {
       expect(letterSpans[i]).toHaveAttribute('data-letter-index', i.toString())
       expect(letterSpans[i]).toHaveStyle({ '--i': i.toString() })
     }
   })
 
   it('should work with custom locale', () => {
-    render(<TypewriterByLetter text="Hello" locale="fr" />)
-    expect(screen.getByText('Hello')).toBeInTheDocument()
+    render(<TypewriterByLetter text="Hallo" locale="fr" />)
+    expect(screen.getByText('Hallo')).toBeInTheDocument()
   })
 
   it('should work with custom grapheme segmenter', () => {
     const customGraphemeSegmenter = new Intl.Segmenter('en', { granularity: 'grapheme' })
 
     render(<TypewriterByLetter
-      text="Hello world"
+      text="Hallo Welt"
       graphemeSegmenter={customGraphemeSegmenter}
     />)
-    expect(screen.getByText('Hello world')).toBeInTheDocument()
+    expect(screen.getByText('Hallo Welt')).toBeInTheDocument()
   })
 
   it('should work with mixed configurations', () => {
     const customGraphemeSegmenter = new Intl.Segmenter('de', { granularity: 'grapheme' })
 
     render(<TypewriterByLetter
-      text="Hello world"
+      text="Hallo Welt"
       locale="en"
       graphemeSegmenter={customGraphemeSegmenter}
     />)
-    expect(screen.getByText('Hello world')).toBeInTheDocument()
+    expect(screen.getByText('Hallo Welt')).toBeInTheDocument()
   })
 
   it('should apply custom timing styles', () => {

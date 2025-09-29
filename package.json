@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "pnpm run build:lib && tsc -b && vite build",
+    "build": "vite build &&pnpm run build:lib && tsc -b",
     "build:lib": "tsdown",
     "typecheck": "pnpm run typecheck:lib && pnpm run typecheck:app && pnpm run typecheck:test",
     "typecheck:lib": "tsc --noEmit --project tsconfig.lib.json",
